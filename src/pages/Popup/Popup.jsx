@@ -34,23 +34,20 @@ const Popup = () => {
       setIsEnabled(newState);
       await chrome.storage.local.set({ enabled: newState });
       
+      // Get the current active tab
       const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+      
       if (tabs[0]?.id) {
-        try {
-          await chrome.tabs.sendMessage(tabs[0].id, {
-            action: 'toggleExtension',
-            enabled: newState
-          });
-        } catch (error) {
-          console.error('Failed to communicate with content script:', error);
-          // If the content script isn't ready, reload the tab
-          if (error.message.includes('could not establish connection')) {
-            await chrome.tabs.reload(tabs[0].id);
-            setMessage('Refreshing page to activate extension...');
-            setTimeout(() => setMessage(''), 3000);
-          } else {
-            throw error;
-          }
+        // Check if the tab is a valid page (not chrome://, chrome-extension://, etc.)
+        const url = tabs[0].url;
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+          // Instead of trying to send a message, just set the storage
+          // The content script will pick up the change via storage listener
+          setMessage(newState ? 'Extension enabled' : 'Extension disabled');
+          setTimeout(() => setMessage(''), 2000);
+        } else {
+          setMessage('Extension works on web pages (http/https) only');
+          setTimeout(() => setMessage(''), 3000);
         }
       } else {
         setMessage('No active tab found');

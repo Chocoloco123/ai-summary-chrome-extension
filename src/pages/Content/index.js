@@ -251,35 +251,60 @@ async function showDialog() {
   window.addEventListener('beforeunload', cleanup);
 }
 
-// Listen for enable/disable messages from popup
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('Text Extractor: Received message', request);
-  try {
-    if (request.action === 'toggleExtension') {
-      isEnabled = request.enabled;
-      const existingButton = document.querySelector('.text-extractor-button');
-      if (isEnabled && !existingButton) {
-        createButton();
-      } else if (!isEnabled && existingButton) {
-        existingButton.remove();
-        if (dialog) dialog.remove();
+// Listen for storage changes from popup
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  console.log('Text Extractor: Storage changed', changes);
+  if (namespace === 'local' && changes.enabled) {
+    const newEnabled = changes.enabled.newValue;
+    console.log('Text Extractor: Extension enabled state changed to:', newEnabled);
+    
+    isEnabled = newEnabled;
+    const existingButton = document.querySelector('.text-extractor-button');
+    
+    if (isEnabled && !existingButton) {
+      createButton();
+    } else if (!isEnabled && existingButton) {
+      existingButton.remove();
+      if (dialog) {
+        dialog.remove();
+        dialog = null;
       }
-      sendResponse({ success: true });
     }
-    return true; // Keep the message channel open for async response
-  } catch (error) {
-    console.error('Text Extractor: Error handling message:', error);
-    sendResponse({ success: false, error: error.message });
-    return true;
   }
 });
 
-// Check initial state and create button
-console.log('Text Extractor: Checking initial state');
-chrome.storage.local.get(['enabled'], (result) => {
-  console.log('Text Extractor: Initial state', result);
-  isEnabled = result.enabled !== false; // Default to enabled if not set
-  if (isEnabled) {
-    createButton();
+// Initialize extension when content script loads
+function initializeExtension() {
+  console.log('Text Extractor: Initializing extension');
+  
+  // Clean up any existing elements first
+  const existingButton = document.querySelector('.text-extractor-button');
+  if (existingButton) {
+    existingButton.remove();
   }
-});
+  
+  const existingDialog = document.querySelector('.text-extractor-dialog');
+  if (existingDialog) {
+    existingDialog.remove();
+    dialog = null;
+  }
+  
+  // Check initial state and create button
+  chrome.storage.local.get(['enabled'], (result) => {
+    console.log('Text Extractor: Initial state', result);
+    isEnabled = result.enabled !== false; // Default to enabled if not set
+    if (isEnabled) {
+      setTimeout(() => {
+        createButton();
+      }, 100); // Small delay to ensure DOM is ready
+    }
+  });
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeExtension);
+} else {
+  // If DOM is already loaded, wait a bit for everything to settle
+  setTimeout(initializeExtension, 50);
+}

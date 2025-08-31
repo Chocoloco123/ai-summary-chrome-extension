@@ -1,10 +1,231 @@
 <img src="src/assets/img/icon-128.png" width="64"/>
 
-# Chrome Extension (MV3) Boilerplate with React 18 and Webpack 5
+# 🌸 Text Extractor & Summarizer Chrome Extension
 
-[![npm](https://img.shields.io/npm/v/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
-[![npm-download](https://img.shields.io/npm/dw/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
-[![npm](https://img.shields.io/npm/dm/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
+A beautiful, Ghibli-inspired Chrome extension that extracts text from web pages and generates AI-powered summaries using OpenAI's GPT-4o-mini model.
+
+## ✨ Features
+
+- **🌸 Cute Floating Button**: A cherry blossom emoji button that appears on every webpage
+- **📄 Text Extraction**: Automatically extracts readable text content from any webpage
+- **🤖 AI Summarization**: Uses OpenAI's GPT-4o-mini to generate intelligent summaries
+- **💾 Local Storage**: Save summaries locally in your browser for later reference
+- **📋 Easy Sharing**: Copy summaries to clipboard with one click
+- **🎨 Beautiful UI**: Ghibli-inspired design with soft colors and smooth animations
+- **⚡ Fast & Lightweight**: Minimal resource usage with efficient text processing
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) version 18 or higher
+- [Chrome Browser](https://www.google.com/chrome/)
+- [OpenAI API Key](https://platform.openai.com/api-keys) (required for summarization)
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <your-repo-url>
+   cd chrome-boiler
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Build the extension**
+
+   ```bash
+   npm run build
+   ```
+
+4. **Load in Chrome**
+
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode" (toggle in top right)
+   - Click "Load unpacked"
+   - Select the `build` folder from this project
+
+5. **Set up your OpenAI API Key**
+   - Click the extension icon in your toolbar
+   - Enter your OpenAI API key in the "OpenAI API Key" section
+   - Click "Save Key"
+
+## 🔑 OpenAI API Key Setup
+
+### Getting Your API Key
+
+1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Sign in or create an account
+3. Click "Create new secret key"
+4. Copy the generated key (starts with `sk-`)
+
+### Security Notes
+
+- Your API key is stored locally in your browser
+- It's never sent to external servers except OpenAI
+- You can delete it anytime from the extension popup
+- The key is used only for text summarization
+
+### Cost Information
+
+- Uses OpenAI's GPT-4o-mini model (very cost-effective)
+- Pricing: ~$0.01 per 1K tokens
+- Typical web page summaries cost less than $0.01
+- You control your usage through your OpenAI account
+
+## 📖 How to Use
+
+### Basic Usage
+
+1. **Enable the Extension**
+
+   - Open the extension popup
+   - Toggle the extension to "Active" (green dot)
+   - The floating cherry blossom button (🌸) will appear on web pages
+
+2. **Extract Text & Summarize**
+
+   - Visit any webpage with text content
+   - Click the floating 🌸 button on the right side
+   - A dialog will open with two tabs:
+     - **Full Text**: Shows all extracted text
+     - **Summary**: Generates AI summary (requires API key)
+
+3. **Save & Share**
+   - In the Summary tab, click "🌟 Save Summary" to store locally
+   - Click "🎨 Share" to copy to clipboard
+   - View saved summaries in the extension popup
+
+### Advanced Features
+
+- **Toggle Extension**: Enable/disable the floating button
+- **Edit API Key**: Update your OpenAI key anytime
+- **View Saved Summaries**: Access all your saved summaries
+- **Delete Summaries**: Remove saved summaries you no longer need
+
+## 🎨 Design Philosophy
+
+This extension features a **Ghibli-inspired aesthetic** with:
+
+- Soft, warm color palette (creams, browns, greens)
+- Rounded corners and gentle shadows
+- Smooth animations and transitions
+- Cute emoji accents (🌸, ✨, 🌟, 🎨)
+- Cozy, welcoming interface
+
+## 🛠️ Development
+
+### Project Structure
+
+```
+src/
+├── pages/
+│   ├── Background/     # Background service worker
+│   ├── Content/        # Content script (floating button & dialog)
+│   └── Popup/          # Extension popup UI
+├── assets/
+│   └── img/            # Extension icons
+└── manifest.json       # Extension configuration
+```
+
+### Available Scripts
+
+- `npm start` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run dev` - Development mode with file watching
+
+### Key Technologies
+
+- **React 18** - Modern UI framework
+- **Chrome Extension Manifest V3** - Latest extension standard
+- **OpenAI API** - AI text summarization
+- **Chrome Storage API** - Local data persistence
+- **Webpack 5** - Modern build system
+
+## 🔧 Configuration
+
+### Customization Options
+
+You can customize the extension by modifying:
+
+- **Colors**: Update CSS variables in `src/pages/Popup/index.css` and `src/pages/Content/content.styles.css`
+- **Icons**: Replace emoji icons in the content script
+- **Model**: Change the OpenAI model in `src/pages/Background/index.js`
+- **Styling**: Modify the Ghibli theme colors and animations
+
+### Environment Variables
+
+- `NODE_ENV=production` - Production build
+- `PORT=6002` - Custom development server port
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+1. **Extension not appearing**
+
+   - Check if Developer mode is enabled
+   - Reload the extension from `chrome://extensions/`
+   - Ensure the extension is toggled to "Active"
+
+2. **API key not working**
+
+   - Verify your OpenAI API key is correct
+   - Check your OpenAI account has credits
+   - Ensure the key starts with `sk-`
+
+3. **Summaries not generating**
+
+   - Check your internet connection
+   - Verify your OpenAI API key is saved
+   - Try refreshing the page and clicking the button again
+
+4. **Button not visible**
+   - Toggle the extension off and on
+   - Refresh the webpage
+   - Check if the page has text content
+
+### Getting Help
+
+- Check the browser console for error messages
+- Verify your OpenAI API key is valid
+- Ensure you have sufficient OpenAI credits
+- Try disabling other extensions that might conflict
+
+## 📝 Privacy & Security
+
+- **Local Storage**: All data is stored locally in your browser
+- **No Tracking**: The extension doesn't collect or share your data
+- **API Calls**: Only sends text content to OpenAI for summarization
+- **Secure**: Uses HTTPS for all API communications
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Inspired by Studio Ghibli's beautiful aesthetic
+- Built with Chrome Extension Manifest V3
+- Powered by OpenAI's GPT-4o-mini
+- Uses the Chrome Extension Boilerplate React template
+
+---
+
+**Made with ❤️ and lots of ✨ sparkles**
 
 ## Announcements
 
