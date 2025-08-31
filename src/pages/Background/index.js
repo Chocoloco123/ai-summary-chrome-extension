@@ -5,6 +5,9 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Handle summarization requests
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('Background: Received message', request);
+  // Keep the message channel open for async response
+  let isResponseAsync = false;
   if (request.action === 'summarize') {
     handleSummarization(request.text)
       .then(summary => sendResponse({ success: true, summary }))

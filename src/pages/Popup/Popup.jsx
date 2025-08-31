@@ -28,18 +28,41 @@ const Popup = () => {
     });
   }, []);
 
-  const handleToggle = () => {
-    const newState = !isEnabled;
-    setIsEnabled(newState);
-    chrome.storage.local.set({ enabled: newState });
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  const handleToggle = async () => {
+    try {
+      const newState = !isEnabled;
+      setIsEnabled(newState);
+      await chrome.storage.local.set({ enabled: newState });
+      
+      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tabs[0]?.id) {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          action: 'toggleExtension',
-          enabled: newState
-        });
+        try {
+          await chrome.tabs.sendMessage(tabs[0].id, {
+            action: 'toggleExtension',
+            enabled: newState
+          });
+        } catch (error) {
+          console.error('Failed to communicate with content script:', error);
+          // If the content script isn't ready, reload the tab
+          if (error.message.includes('could not establish connection')) {
+            await chrome.tabs.reload(tabs[0].id);
+            setMessage('Refreshing page to activate extension...');
+            setTimeout(() => setMessage(''), 3000);
+          } else {
+            throw error;
+          }
+        }
+      } else {
+        setMessage('No active tab found');
+        setTimeout(() => setMessage(''), 3000);
       }
-    });
+    } catch (error) {
+      console.error('Toggle error:', error);
+      setMessage('Error toggling extension. Please refresh the page.');
+      setTimeout(() => setMessage(''), 3000);
+      // Revert the toggle state if there was an error
+      setIsEnabled(!newState);
+    }
   };
 
   const handleApiKeySubmit = () => {
@@ -72,22 +95,34 @@ const Popup = () => {
       </div>
       
       {/* Extension Toggle */}
-      <div className="section flex-row space-between">
-        <span className="text-regular">Extension Status</span>
-        <div className="flex-row">
-          <span className={`text-regular ${isEnabled ? 'text-success' : 'text-muted'}`}>
-            {isEnabled ? 'Enabled' : 'Disabled'}
-          </span>
-          <label className="toggle-switch">
-            <span className="visually-hidden">Enable extension</span>
-            <input
-              type="checkbox"
-              checked={isEnabled}
-              onChange={handleToggle}
-              aria-label="Enable extension"
-            />
-            <span className="toggle-slider" role="presentation"></span>
-          </label>
+      <div className="section">
+        <div className="status-container">
+          <div className="status-header">
+            <h2 className="section-title">Extension Status</h2>
+            <div className="status-indicator">
+              <span className={`status-dot ${isEnabled ? 'active' : ''}`} />
+              <span className={`status-text ${isEnabled ? 'enabled' : 'disabled'}`}>
+                {isEnabled ? 'Active' : 'Inactive'}
+              </span>
+            </div>
+          </div>
+          <div className="toggle-wrapper">
+            <label className="toggle-switch" htmlFor="extension-toggle">
+              <input
+                id="extension-toggle"
+                type="checkbox"
+                checked={isEnabled}
+                onChange={handleToggle}
+                aria-label="Toggle extension"
+              />
+              <span className="toggle-track">
+                <span className="toggle-thumb" />
+              </span>
+            </label>
+            <span className="toggle-label">
+              {isEnabled ? 'Click to disable' : 'Click to enable'}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -116,8 +151,9 @@ const Popup = () => {
         </div>
 
         {(!isApiKeySet || isEditing) ? (
-          <div>
-                          <input
+          <div className="api-key-form">
+            <div className="input-group">
+              <input
                 type={showApiKey ? 'text' : 'password'}
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
@@ -126,15 +162,20 @@ const Popup = () => {
                 aria-label="OpenAI API Key"
                 id="api-key-input"
               />
-            <div className="flex-row space-between">
-              <label className="text-small flex-row">
-                <input
-                  type="checkbox"
-                  checked={showApiKey}
-                  onChange={() => setShowApiKey(!showApiKey)}
-                />
-                Show Key
-              </label>
+            </div>
+            
+            <div className="form-actions">
+              <div className="checkbox-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={showApiKey}
+                    onChange={() => setShowApiKey(!showApiKey)}
+                  />
+                  <span>Show Key</span>
+                </label>
+              </div>
+              
               <div className="button-container">
                 {isEditing && (
                   <button
@@ -160,9 +201,11 @@ const Popup = () => {
             </div>
           </div>
         ) : (
-          <div className="text-success flex-row">
-            <span>✓</span>
-            API key is set and ready to use
+          <div className="api-key-status">
+            <div className="status-success">
+              <span className="status-icon">✓</span>
+              <span className="status-message">API key is set and ready to use</span>
+            </div>
           </div>
         )}
       </div>
