@@ -1,0 +1,287 @@
+/* Cute Theme */
+:root {
+  --brown: #6B4423;         /* Main text color */
+  --cream: #FFF3E0;        /* Background color */
+  --mint: #98B4A6;         /* Active state color */
+  --yellow: #FFD93D;       /* Accent color */
+  --coral: #FF9B8C;        /* Secondary accent */
+  --border-radius: 25px;   /* Rounded corners */
+  --font-main: "Nunito", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Dialog Container */
+.text-extractor-dialog {
+  position: fixed;
+  right: 90px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 460px;
+  max-height: 80vh;
+  background: var(--cream);
+  padding: 24px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 24px rgba(107, 68, 35, 0.15);
+  z-index: 10001;
+  overflow-y: auto;
+  border: 2px solid rgba(107, 68, 35, 0.1);
+  font-family: var(--font-main);
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Dialog Title */
+.text-extractor-dialog h3 {
+  margin: 0 0 24px 0;
+  color: var(--brown);
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  position: relative;
+}
+
+.text-extractor-dialog h3:after {
+  content: "✨";
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+}
+
+.text-extractor-dialog h3:before {
+  content: "✨";
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+}
+
+/* Tab Container */
+.tab-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 6px;
+  background: white;
+  border-radius: var(--border-radius);
+  border: 2px solid rgba(107, 68, 35, 0.1);
+}
+
+/* Tab Buttons */
+.tab {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--brown);
+  border-radius: calc(var(--border-radius) - 6px);
+  transition: all 0.3s ease;
+}
+
+.tab.active {
+  background-color: var(--mint);
+  color: white;
+}
+
+.tab:hover:not(.active) {
+  background-color: rgba(107, 68, 35, 0.05);
+}
+
+/* Content Area */
+.content-area {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 2px solid rgba(107, 68, 35, 0.1);
+}
+
+/* Text Content */
+.text-content {
+  color: var(--brown);
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* Loading State */
+.loading-container {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 2px solid rgba(107, 68, 35, 0.1);
+  animation: bounce 0.5s ease;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--mint);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  color: var(--brown);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Action Buttons */
+.action-container {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(107, 68, 35, 0.1);
+}
+
+.action-button {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(107, 68, 35, 0.1);
+}
+
+.action-button.save {
+  background-color: var(--mint);
+  color: white;
+}
+
+.action-button.save:before {
+  content: "💾";
+  font-size: 18px;
+}
+
+.action-button.share {
+  background-color: var(--yellow);
+  color: var(--brown);
+}
+
+.action-button.share:before {
+  content: "📤";
+  font-size: 18px;
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(107, 68, 35, 0.15);
+}
+
+/* Floating Button */
+.text-extractor-button {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--mint);
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(107, 68, 35, 0.2);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 3px solid white;
+}
+
+.text-extractor-button:hover {
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 8px 20px rgba(107, 68, 35, 0.25);
+}
+
+/* Close Button */
+.text-extractor-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--brown);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.text-extractor-close:hover {
+  background-color: rgba(107, 68, 35, 0.05);
+  transform: scale(1.1);
+}
+
+/* Scrollbar */
+.text-extractor-dialog::-webkit-scrollbar {
+  width: 10px;
+}
+
+.text-extractor-dialog::-webkit-scrollbar-track {
+  background: var(--cream);
+  border-radius: 5px;
+}
+
+.text-extractor-dialog::-webkit-scrollbar-thumb {
+  background: var(--mint);
+  border-radius: 5px;
+  border: 2px solid var(--cream);
+}
+
+.text-extractor-dialog::-webkit-scrollbar-thumb:hover {
+  background: var(--brown);
+}
+
+/* Animations */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.9);
+  }
+  70% {
+    transform: translateY(-50%) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
